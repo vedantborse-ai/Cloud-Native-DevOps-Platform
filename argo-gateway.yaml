@@ -1,0 +1,45 @@
+apiVersion: gateway.networking.k8s.io/v1
+kind: Gateway
+metadata:
+  name: app-gateway
+  namespace: default
+  annotations:
+    cert-manager.io/cluster-issuer: letsencrypt-prod
+spec:
+  gatewayClassName: nginx
+  listeners:
+  - name: http
+    port: 80
+    protocol: HTTP
+    hostname: "app.vedantborse.dev"
+  - name: https
+    hostname: "app.vedantborse.dev"
+    port: 443
+    protocol: HTTPS
+    allowedRoutes:
+      namespaces:
+        from: All
+    tls:
+      mode: Terminate
+      certificateRefs:
+      - name: app-vedantborse-dev-tls
+        kind: Secret
+        group: ""
+  - name: argo-http
+    port: 80
+    protocol: HTTP
+    hostname: "argo.vedantborse.dev"
+  - name: argo-https
+    hostname: "argo.vedantborse.dev"
+    port: 443
+    protocol: HTTPS
+    allowedRoutes:
+      namespaces:
+        from: All
+    tls:
+      mode: Terminate
+      certificateRefs:
+      - name: argo-vedantborse-dev-tls
+        kind: Secret
+        group: ""
+
